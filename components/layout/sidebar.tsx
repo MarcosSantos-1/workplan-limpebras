@@ -3,9 +3,10 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { CalendarDays, CalendarHeart, FolderClock, Sofa, type LucideIcon } from "lucide-react";
+import { CalendarDays, CalendarHeart, FolderClock, ShieldCheck, Sofa, type LucideIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/lib/auth";
+import { ehAdmin, PAPEL_LABEL, STATUS_LABEL } from "@/lib/usuarios";
 import { UserToolbar } from "@/components/motion-ui/user-toolbar";
 
 type Item = { href: string; label: string; icon: LucideIcon; dot?: string; match?: "exact" | "prefix"; disabled?: boolean };
@@ -29,7 +30,8 @@ const servicos: Item[] = [
 
 export function Sidebar({ collapsed = false }: { collapsed?: boolean }) {
   const pathname = usePathname();
-  const { user, logout } = useAuth();
+  const { user, perfil, logout } = useAuth();
+  const admin = ehAdmin(perfil);
 
   const ativo = (i: Item) =>
     i.match === "exact" ? pathname === i.href : pathname === i.href || pathname.startsWith(`${i.href}/`);
@@ -88,6 +90,7 @@ export function Sidebar({ collapsed = false }: { collapsed?: boolean }) {
 
         <nav className="flex-1 min-h-0 space-y-1.5 overflow-y-auto p-3 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
           {principais.map((i) => item(i))}
+          {admin && item({ href: "/acessos", label: "Acessos", icon: ShieldCheck })}
           <div className="rounded-2xl border border-border/60 bg-background/40 p-1.5 shadow-sm">
             <div className="px-2.5 py-2 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
               Gerador de cronograma
@@ -98,10 +101,11 @@ export function Sidebar({ collapsed = false }: { collapsed?: boolean }) {
 
         <div className="border-t border-border/70 bg-background/50 p-4">
           <UserToolbar
-            displayName={user?.displayName || user?.email?.split("@")[0] || "Sem sessão"}
+            displayName={perfil?.nome || user?.displayName || user?.email?.split("@")[0] || "Sem sessão"}
             username={user?.email || "—"}
-            roleLabel="Planejamento"
-            statusLabel="Ativo"
+            roleLabel={perfil ? PAPEL_LABEL[perfil.papel] : "—"}
+            statusLabel={perfil ? STATUS_LABEL[perfil.status] : "—"}
+            menuItems={admin ? [{ href: "/acessos", label: "Gerenciar acessos", icon: ShieldCheck }] : []}
             onLogout={() => void logout()}
           />
         </div>

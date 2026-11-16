@@ -5,10 +5,11 @@ import { usePathname, useRouter } from "next/navigation";
 import { Menu } from "lucide-react";
 import { Sidebar } from "./sidebar";
 import { useAuth } from "@/lib/auth";
+import { AcessoNegado } from "./acesso-negado";
 
 export function AppShell({ children }: { children: React.ReactNode }) {
   const [collapsed, setCollapsed] = useState(false);
-  const { user, loading } = useAuth();
+  const { user, perfil, loading } = useAuth();
   const router = useRouter();
   const pathname = usePathname();
 
@@ -25,6 +26,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       </div>
     );
   }
+
+  if (!perfil || perfil.status !== "ativo") return <AcessoNegado perfil={perfil ?? null} />;
 
   return (
     <div className="flex min-h-screen overflow-x-hidden bg-background">

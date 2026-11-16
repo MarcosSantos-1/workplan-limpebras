@@ -14,11 +14,14 @@ import { estatisticas } from "@/lib/plano/motor";
 import { SERVICOS } from "@/lib/plano/servicos";
 import { baixarExcel } from "@/lib/excel";
 import { cn } from "@/lib/utils";
+import { useAuth } from "@/lib/auth";
+import { podeEditar } from "@/lib/usuarios";
 
 export default function CronogramaDetalhePage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
   const [c, setC] = useState<CronogramaDoc | null | undefined>(undefined);
   const [ocupado, setOcupado] = useState(false);
+  const editor = podeEditar(useAuth().perfil);
 
   const carregar = useCallback(() => {
     obterCronograma(id)
@@ -110,12 +113,12 @@ export default function CronogramaDetalhePage({ params }: { params: Promise<{ id
           >
             <Download className="h-4 w-4" /> Excel
           </Button>
-          {c.status !== "publicado" && (
+          {editor && c.status !== "publicado" && (
             <Button className={cn("h-9", BTN_EMERALD)} disabled={ocupado} onClick={() => void mudar("publicado")}>
               <Send className="h-4 w-4" /> Publicar
             </Button>
           )}
-          {c.status !== "arquivado" && (
+          {editor && c.status !== "arquivado" && (
             <Button className={cn("h-9", BTN_AMBER)} disabled={ocupado} onClick={() => void mudar("arquivado")}>
               <Archive className="h-4 w-4" /> Arquivar
             </Button>

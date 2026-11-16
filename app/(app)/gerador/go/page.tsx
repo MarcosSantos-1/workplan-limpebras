@@ -44,6 +44,8 @@ import { GO, mapasDoSlot, slotDoMapa } from "@/lib/plano/servicos";
 import { salvarCronograma } from "@/lib/cronogramas";
 import { baixarExcel } from "@/lib/excel";
 import { cn } from "@/lib/utils";
+import { useAuth } from "@/lib/auth";
+import { podeEditar } from "@/lib/usuarios";
 
 const servico = GO;
 
@@ -62,6 +64,8 @@ function MapasDoSlotInline({ slot }: { slot: number }) {
 
 export default function GeradorGOPage() {
   const router = useRouter();
+  const { perfil } = useAuth();
+  const editor = podeEditar(perfil);
   const { segmentos, publicados, carregando, erro } = useLinhaTempo(servico);
 
   const amanha = addDays(todayIso(), 1);
@@ -431,10 +435,10 @@ export default function GeradorGOPage() {
                 <Button className={cn("h-9", BTN_SECONDARY)} onClick={() => void exportar()}>
                   <Download className="h-4 w-4" /> Excel
                 </Button>
-                <Button className={cn("h-9", BTN_SKY)} disabled={!!salvando} onClick={() => void salvar("rascunho")}>
+                <Button className={cn("h-9", BTN_SKY)} disabled={!!salvando || !editor} title={editor ? undefined : "Seu papel é somente leitura"} onClick={() => void salvar("rascunho")}>
                   {salvando === "rascunho" ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />} Salvar rascunho
                 </Button>
-                <Button className={cn("h-9", BTN_EMERALD)} disabled={!!salvando} onClick={() => void salvar("publicado")}>
+                <Button className={cn("h-9", BTN_EMERALD)} disabled={!!salvando || !editor} title={editor ? undefined : "Seu papel é somente leitura"} onClick={() => void salvar("publicado")}>
                   {salvando === "publicado" ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />} Salvar e publicar
                 </Button>
               </div>

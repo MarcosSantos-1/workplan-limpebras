@@ -1,12 +1,13 @@
 "use client";
 
 import { Suspense, useEffect, useState } from "react";
-import Image from "next/image";
+import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Loader2, LogIn } from "lucide-react";
+import { KeyRound, Loader2, LogIn } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { BTN_EMERALD, GLASS_CARD } from "@/components/design/kit";
+import { BTN_EMERALD, BTN_SECONDARY } from "@/components/design/kit";
+import { AuthCard, AuthErro, AuthScreen } from "@/components/layout/auth-card";
 import { traduzErroAuth, useAuth } from "@/lib/auth";
 import { cn } from "@/lib/utils";
 
@@ -38,37 +39,39 @@ function LoginForm() {
   }
 
   return (
-    <form onSubmit={onSubmit} className={cn("w-full max-w-sm space-y-5 rounded-2xl p-8 backdrop-blur-md", GLASS_CARD, "bg-card/90")}>
-      <div className="flex justify-center">
-        <Image src="/logotipo.png" alt="Limpebras" width={180} height={48} className="h-10 w-auto dark:hidden" style={{ width: "auto" }} priority />
-        <Image src="/logotipo-white.png" alt="Limpebras" width={180} height={48} className="hidden h-10 w-auto dark:block" style={{ width: "auto" }} priority />
+    <AuthCard titulo="WorkPlan" subtitulo="Plano de trabalho · Lote III">
+      <form onSubmit={onSubmit} className="space-y-4">
+        <div className="space-y-3">
+          <Input type="email" placeholder="E-mail" autoComplete="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
+          <Input type="password" placeholder="Senha" autoComplete="current-password" value={senha} onChange={(e) => setSenha(e.target.value)} required />
+        </div>
+        <div className="-mt-1 text-right">
+          <Link href={`/recuperar-senha${email ? `?email=${encodeURIComponent(email)}` : ""}`} className="text-xs font-medium text-emerald-700 hover:underline dark:text-emerald-400">
+            Esqueci minha senha
+          </Link>
+        </div>
+        {erro && <AuthErro>{erro}</AuthErro>}
+        <Button type="submit" disabled={enviando} className={cn("h-10 w-full", BTN_EMERALD)}>
+          {enviando ? <Loader2 className="h-4 w-4 animate-spin" /> : <LogIn className="h-4 w-4" />}
+          Entrar
+        </Button>
+      </form>
+      <div className="flex items-center gap-3 text-xs text-muted-foreground">
+        <span className="h-px flex-1 bg-border" /> é sua primeira vez? <span className="h-px flex-1 bg-border" />
       </div>
-      <div className="text-center">
-        <h1 className="text-xl font-bold">WorkPlan</h1>
-        <p className="text-sm text-muted-foreground">Plano de trabalho · Lote III</p>
-      </div>
-      <div className="space-y-3">
-        <Input type="email" placeholder="E-mail" autoComplete="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
-        <Input type="password" placeholder="Senha" autoComplete="current-password" value={senha} onChange={(e) => setSenha(e.target.value)} required />
-      </div>
-      {erro && <p className="rounded-lg border border-red-500/30 bg-red-500/10 px-3 py-2 text-sm text-red-600 dark:text-red-400">{erro}</p>}
-      <Button type="submit" disabled={enviando} className={cn("h-10 w-full", BTN_EMERALD)}>
-        {enviando ? <Loader2 className="h-4 w-4 animate-spin" /> : <LogIn className="h-4 w-4" />}
-        Entrar
-      </Button>
-      <p className="text-center text-[11px] text-muted-foreground">Usuários são criados pelo administrador no Firebase.</p>
-    </form>
+      <Link href="/primeiro-acesso" className={cn("inline-flex h-10 w-full items-center justify-center gap-2 rounded-md text-sm", BTN_SECONDARY)}>
+        <KeyRound className="h-4 w-4" /> Primeiro acesso
+      </Link>
+    </AuthCard>
   );
 }
 
 export default function LoginPage() {
   return (
-    <div className="relative flex min-h-screen items-center justify-center p-6">
-      <Image src="/login-bg.jpg" alt="" fill className="-z-10 object-cover" priority />
-      <div className="absolute inset-0 -z-10 bg-linear-to-br from-emerald-950/60 via-teal-900/40 to-cyan-950/60" />
+    <AuthScreen>
       <Suspense>
         <LoginForm />
       </Suspense>
-    </div>
+    </AuthScreen>
   );
 }
