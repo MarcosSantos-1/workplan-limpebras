@@ -1,0 +1,221 @@
+@import "tailwindcss";
+
+/* @plugin "tailwindcss-animate"; */
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+:root {
+  --background: #f8f9fc;
+  --foreground: #171717;
+  --card: #ffffff;
+  --card-foreground: #09090b;
+  --popover: #ffffff;
+  --popover-foreground: #09090b;
+  --primary: #4f46e5;
+  --primary-foreground: #fafafa;
+  --secondary: #f4f4f5;
+  --secondary-foreground: #18181b;
+  --muted: #f4f4f5;
+  --muted-foreground: #71717a;
+  --accent: #f4f4f5;
+  --accent-foreground: #18181b;
+  --destructive: #ef4444;
+  --destructive-foreground: #fafafa;
+  --border: #e2e8f0;
+  --input: #e4e4e7;
+  --ring: #4f46e5;
+  --chart-1: #e76e50;
+  --chart-2: #2a9d8f;
+  --chart-3: #264653;
+  --chart-4: #f4a261;
+  --chart-5: #8ab17d;
+  --radius: 0.5rem;
+}
+
+.dark {
+  --background: #09090b;
+  --foreground: #fafafa;
+  --card: #121214;
+  --card-foreground: #fafafa;
+  --popover: #121214;
+  --popover-foreground: #fafafa;
+  --primary: #818cf8;
+  --primary-foreground: #18181b;
+  --secondary: #27272a;
+  --secondary-foreground: #fafafa;
+  --muted: #27272a;
+  --muted-foreground: #a1a1aa;
+  --accent: #27272a;
+  --accent-foreground: #fafafa;
+  --destructive: #7f1d1d;
+  --destructive-foreground: #fafafa;
+  --border: #27272a;
+  --input: #27272a;
+  --ring: #818cf8;
+  --chart-1: #220406;
+  --chart-2: #2a9d8f;
+  --chart-3: #264653;
+  --chart-4: #f4a261;
+  --chart-5: #8ab17d;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-plus-jakarta-sans), Arial, Helvetica, sans-serif;
+  overflow-x: hidden;
+}
+
+html {
+  overflow-x: hidden;
+}
+
+/* PDF export: mostra capa e esconde controles */
+.pdf-exporting .report-screen-only {
+  display: none !important;
+}
+.pdf-exporting .report-print-cover {
+  display: flex !important;
+  min-height: auto;
+}
+
+/* ===== Glass design — piloto IPT Geral (Apple vibrante) =====
+   Fundo "aurora" sutil atrás do conteúdo para o vidro fosco ter o que desfocar.
+   Fixo ao viewport (parallax) e clipado à caixa do wrapper. */
+.aurora-page {
+  background-image:
+    radial-gradient(48rem 38rem at 6% -8%, rgba(16, 185, 129, 0.16), transparent 60%),
+    radial-gradient(42rem 34rem at 100% 0%, rgba(13, 148, 136, 0.14), transparent 58%),
+    radial-gradient(40rem 40rem at 62% 118%, rgba(99, 102, 241, 0.12), transparent 60%);
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+}
+
+.dark .aurora-page {
+  background-image:
+    radial-gradient(48rem 38rem at 6% -8%, rgba(16, 185, 129, 0.22), transparent 60%),
+    radial-gradient(42rem 34rem at 100% 0%, rgba(13, 148, 136, 0.18), transparent 58%),
+    radial-gradient(40rem 40rem at 62% 118%, rgba(129, 140, 248, 0.16), transparent 60%);
+}
+
+.grid-pattern {
+  background-size: 40px 40px;
+  background-image: linear-gradient(to right, rgba(128, 128, 128, 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(128, 128, 128, 0.05) 1px, transparent 1px);
+}
+
+.dark .grid-pattern {
+  background-image: linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+}
+
+@media print {
+  @page {
+    size: A4;
+    margin: 20mm;
+  }
+
+  .app-sidebar,
+  .sidebar-toggle,
+  .report-screen-only {
+    display: none !important;
+  }
+
+  main {
+    margin-left: 0 !important;
+  }
+
+  .report-print-area {
+    max-width: none !important;
+    width: 100% !important;
+    padding: 0 !important;
+  }
+
+  .report-print-cover {
+    display: flex !important;
+    flex-direction: column;
+    justify-content: center;
+    min-height: 250mm;
+    padding: 20mm;
+    page-break-after: always;
+  }
+
+  .report-print-break-before {
+    page-break-before: always;
+  }
+
+  .report-print-indicator {
+    page-break-before: always;
+  }
+
+  .grid-pattern {
+    display: none !important;
+  }
+
+  body {
+    background: #fff !important;
+    color: #000 !important;
+  }
+
+  .report-print-area * {
+    box-shadow: none !important;
+  }
+
+  .report-print-area .data-cell,
+  .report-print-area [class*="shadow"] {
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08) !important;
+  }
+}
+
+@keyframes gradient {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+@keyframes ping {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  75%, 100% {
+    transform: scale(1.5);
+    opacity: 0;
+  }
+}
